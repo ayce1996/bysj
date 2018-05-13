@@ -1,0 +1,12 @@
+dataset = xlsread('/Dataset/iris/iris_data_dfl.xlsx');
+data = dataset(:,1:size(dataset,2)-1);
+label = dataset(:,size(dataset,2));
+data_train = [data(1:25,:);data(51:75,:);data(101:125,:)];
+data_train_label = [label(1:25);label(51:75);label(101:125)];
+data_test = [data(26:50,:);data(76:100,:);data(126:150,:)];
+data_test_label = [label(26:50);label(76:100);label(126:150)];
+[bestacc, bestc, bestg] = SVMcgForClass(label, data);
+cmd = ['-c ',num2str(bestc),'-g ',num2str(bestg)];
+save('resultOfiris_dfl.mat','bestc','bestg','cmd','-append');
+model = libsvmtrain(data_train_label,data_train,cmd);
+[predictlabel, accuracy] = libsvmpredict(data_test_label,data_test,model);
